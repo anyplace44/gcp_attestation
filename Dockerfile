@@ -33,7 +33,6 @@ WORKDIR /app
 # COPY --from=healthcheck-builder /usr/local/cargo/bin/simple-web-healthcheck /healthcheck
 
 # copy needed files and binary for oprf-service
-COPY ./oprf-testnet-authentication/blinded_query_proof.vk /app/blinded_query_proof.vk
 COPY --from=builder /app/target/release/http_service /app/http_service
 
 ENTRYPOINT [ "/app/http_service" ]
