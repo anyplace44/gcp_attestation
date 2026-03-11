@@ -34,6 +34,7 @@ WORKDIR /app
 
 # copy needed files and binary for oprf-service
 COPY --from=builder /app/target/release/http_service /app/http_service
+EXPOSE 8000
 
 ENTRYPOINT [ "/app/http_service" ]
 
