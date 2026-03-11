@@ -1,0 +1,40 @@
+FROM lukemathwalker/cargo-chef:0.1.73-rust-1.93.0-bookworm AS chef
+WORKDIR /app
+
+FROM chef AS planner
+# look at .dockerignore if this does not copy what you want
+COPY . .
+RUN cargo chef prepare --recipe-path recipe.json
+
+FROM chef AS builder 
+ARG GIT_HASH
+RUN apt-get update && apt-get install -y pkg-config
+COPY --from=planner /app/recipe.json recipe.json
+# Build dependencies - this is the caching Docker layer!
+RUN cargo chef cook --release --recipe-path recipe.json
+# Build application
+COPY . .
+RUN cargo build --release --bin taceo-oprf-testnet-node
+
+
+# Build healthcheck
+# FROM rust:1.93-bookworm AS healthcheck-builder
+# RUN cargo install simple-web-healthcheck
+
+
+FROM gcr.io/distroless/cc-debian12:nonroot AS runtime
+# ARG GIT_HASH
+# LABEL org.opencontainers.image.revision=$GIT_HASH
+# LABEL org.opencontainers.image.vendor=TACEO
+# LABEL org.opencontainers.image.source=https://github.com/TaceoLabs/oprf-testnet
+# LABEL org.opencontainers.image.description="OPRF example service"
+WORKDIR /app
+# copy healthcheck 
+# COPY --from=healthcheck-builder /usr/local/cargo/bin/simple-web-healthcheck /healthcheck
+
+# copy needed files and binary for oprf-service
+COPY ./oprf-testnet-authentication/blinded_query_proof.vk /app/blinded_query_proof.vk
+COPY --from=builder /app/target/release/http_service /app/http_service
+
+ENTRYPOINT [ "/app/http_service" ]
+
