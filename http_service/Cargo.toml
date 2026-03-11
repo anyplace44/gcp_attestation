@@ -18,6 +18,7 @@ futures-util = { workspace = true, default-features = false, features = [
   "std"
 ] }
 headers.workspace = true
+reqwest.workspace = true
 serde_bytes.workspace = true
 serde_cbor.workspace = true
 tokio = { workspace = true, features = [

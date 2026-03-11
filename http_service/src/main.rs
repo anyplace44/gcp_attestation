@@ -67,6 +67,11 @@ pub async fn get_attestation_route() -> Vec<u8> {
     println!("Getting attestation document...");
     // return format!("Attestation document: {:?}", get_attestation_dc());
     // get_attestation().unwrap()
+    // let body = reqwest::body::Body::from("Hello, World!")
+    //     .send()
+    //     .await
+    //     .unwrap();
+    //
     todo!()
 }
 
