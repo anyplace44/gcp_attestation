@@ -3,6 +3,11 @@ name: Release
 permissions:
   contents: write
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/${{ inputs.image-name }}
+  BUILDX_NO_DEFAULT_ATTESTATIONS: 1
+
 on: push
 
 jobs:
