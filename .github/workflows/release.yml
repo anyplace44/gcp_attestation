@@ -2,6 +2,7 @@ name: Release
 
 jobs:
   create-release:
+    runs-on: ubuntu-latest
     steps:
       - name: Build and push Docker image
         id: push
