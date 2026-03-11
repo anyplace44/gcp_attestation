@@ -2,16 +2,16 @@ name: Release
 
 jobs:
   create-release:
-  steps:
-    - name: Build and push Docker image
-      id: push
-      uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
-      with:
-        context: .
-        platforms: linux/amd64,linux/arm64
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        build-args: |
-          GIT_COMMIT_SHA=${{ env.COMMIT_SHA_FULL }}
-          GIT_REPOSITORY_URL=${{ env.REPOSITORY_URL }}
+    steps:
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            GIT_COMMIT_SHA=${{ env.COMMIT_SHA_FULL }}
+            GIT_REPOSITORY_URL=${{ env.REPOSITORY_URL }}
