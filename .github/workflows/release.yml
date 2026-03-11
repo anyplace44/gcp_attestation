@@ -5,7 +5,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/${{ inputs.image-name }}
+  IMAGE_NAME: ${{ github.repository }}/http_service
   BUILDX_NO_DEFAULT_ATTESTATIONS: 1
 
 on: push
@@ -17,12 +17,6 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v5
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v4
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Log in to the Github Container registry
         uses: docker/login-action@v3
@@ -30,6 +24,12 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Docker meta
         id: meta
@@ -59,3 +59,5 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
