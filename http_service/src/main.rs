@@ -47,7 +47,7 @@ pub async fn start_service() -> eyre::Result<()> {
         .route("/", axum::routing::get(return_hello))
         .route("/attest", axum::routing::get(get_attestation_route))
         .route("/ws", any(ws_handler));
-    let addr = std::net::SocketAddr::from(([127, 0, 0, 1], 8000));
+    let addr = std::net::SocketAddr::from(([0, 0, 0, 0], 8000));
     let listener = tokio::net::TcpListener::bind(addr).await?;
     println!("Listening on {}", addr);
     axum::serve(
