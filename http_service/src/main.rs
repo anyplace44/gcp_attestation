@@ -63,16 +63,21 @@ pub async fn return_hello() -> &'static str {
     "Hello, World!"
 }
 
-pub async fn get_attestation_route() -> Vec<u8> {
+pub async fn get_attestation_route() -> String {
     println!("Getting attestation document...");
     // return format!("Attestation document: {:?}", get_attestation_dc());
     // get_attestation().unwrap()
-    // let body = reqwest::body::Body::from("Hello, World!")
-    //     .send()
-    //     .await
-    //     .unwrap();
-    //
-    todo!()
+    let client = reqwest::Client::new();
+    let res = client
+        .post("http://localhost/v1/token")
+        .send()
+        .await
+        .unwrap();
+
+    println!("Received response: {:?}", res);
+    let body = res.text().await.unwrap();
+    let ret_val = format!("Attestation document: {body}");
+    ret_val
 }
 
 fn get_attestation(nonce: Bytes) -> eyre::Result<Vec<u8>> {
