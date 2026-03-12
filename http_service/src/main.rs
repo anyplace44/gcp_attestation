@@ -27,7 +27,7 @@ use axum::extract::connect_info::ConnectInfo;
 //allows to split the websocket stream into separate TX and RX branches
 use futures_util::{sink::SinkExt, stream::StreamExt};
 
-use crate::lib::connect_local;
+mod lib;
 
 #[tokio::main]
 async fn main() -> eyre::Result<ExitCode> {
@@ -66,7 +66,7 @@ pub async fn return_hello() -> &'static str {
 }
 
 pub async fn get_attestation_route() -> String {
-    connect_local().await.unwrap();
+    lib::connect_local().await.unwrap();
     return "works".to_string();
 }
 
