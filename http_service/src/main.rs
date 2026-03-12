@@ -1,7 +1,3 @@
-use serde_bytes::ByteBuf;
-use serde_cbor::Value;
-use std::{error::Error, process::ExitCode};
-
 use axum::{
     Router,
     body::Bytes,
@@ -10,6 +6,11 @@ use axum::{
     routing::any,
 };
 use axum_extra::TypedHeader;
+use hyper::{Request, Uri};
+use serde_bytes::ByteBuf;
+use serde_cbor::Value;
+use std::{error::Error, os::unix::net::UnixStream, process::ExitCode};
+use tokio::io::{self, AsyncBufReadExt, BufReader};
 
 use std::ops::ControlFlow;
 use std::{net::SocketAddr, path::PathBuf};
@@ -22,10 +23,11 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 //allows to extract the IP of connecting user
 use axum::extract::connect_info::ConnectInfo;
-use axum::extract::ws::CloseFrame;
 
 //allows to split the websocket stream into separate TX and RX branches
 use futures_util::{sink::SinkExt, stream::StreamExt};
+
+use crate::lib::connect_local;
 
 #[tokio::main]
 async fn main() -> eyre::Result<ExitCode> {
@@ -64,20 +66,8 @@ pub async fn return_hello() -> &'static str {
 }
 
 pub async fn get_attestation_route() -> String {
-    println!("Getting attestation document...");
-    // return format!("Attestation document: {:?}", get_attestation_dc());
-    // get_attestation().unwrap()
-    let client = reqwest::Client::new();
-    let res = client
-        .post("http://localhost/v1/token")
-        .send()
-        .await
-        .unwrap();
-
-    println!("Received response: {:?}", res);
-    let body = res.text().await.unwrap();
-    let ret_val = format!("Attestation document: {body}");
-    ret_val
+    connect_local().await.unwrap();
+    return "works".to_string();
 }
 
 fn get_attestation(nonce: Bytes) -> eyre::Result<Vec<u8>> {
